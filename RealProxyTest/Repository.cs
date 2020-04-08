@@ -6,8 +6,14 @@ using System.Threading.Tasks;
 
 namespace RealProxyTest
 {
-    public class Repository<T> : IRepository<T>
+    [Log]
+    public class Repository<T> : ContextBoundObject, IRepository<T>
     {
+        public Repository()
+        {
+            Console.WriteLine("Constructed");
+        }
+
         public void Add(T entity)
         {
             Console.WriteLine("Adding {0}", entity);
