@@ -2,12 +2,12 @@
 
 namespace RealProxyTest
 {
-    public interface IRepository<T>
+    public interface IRepository
     {
-        void Add(T entity);
-        void Delete(T entity);
-        void Update(T entity);
-        IEnumerable<T> GetAll();
-        T GetById(int id);
+        void Add(Customer entity);
+        void Delete(Customer entity);
+        void Update(Customer entity);
+        IEnumerable<Customer> GetAll();
+        Customer GetById(int id);
     }
 }

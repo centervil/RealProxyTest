@@ -19,7 +19,7 @@ namespace RealProxyTest
         protected override void OnStartup(StartupEventArgs e)
         {
             Console.WriteLine("***\r\n Begin program - logging with dynamic proxy\r\n");
-            IRepository<Customer> customerRepository = new Repository<Customer>();
+            IRepository customerRepository = new Repository();
               //RepositoryFactory.Create<Customer>();
             Customer customer = new Customer
             {

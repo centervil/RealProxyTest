@@ -21,7 +21,7 @@ namespace RealProxyTest
               "After executing '{0}'", e.MethodName);
             rp.ErrorExecuting += (s, e) => Log(
               "Error executing '{0}'", e.MethodName);
-            rp.Filter = m => !m.Name.StartsWith("Get");
+            //rp.Filter = m => !m.Name.StartsWith("Get");
 
             return rp.GetTransparentProxy() as MarshalByRefObject;
         }
