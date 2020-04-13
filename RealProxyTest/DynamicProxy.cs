@@ -95,40 +95,19 @@ namespace RealProxyTest
 
         private IConstructionReturnMessage InvokeConstructor(IConstructionCallMessage constructionCall)
         {
-            //ConstructorInfo constructorInfo = constructionCall.MethodBase as ConstructorInfo;
-            //var result = constructorInfo.Invoke(_decorated, constructionCall.InArgs);
-            //return new ReturnMessage(
-            //      result, null, 0, constructionCall.LogicalCallContext, constructionCall);
-            //IConstructionReturnMessage constructionReturn = InitializeServerObject(constructionCall);
-            //_decorated = GetUnwrappedServer();
-            //SetStubData(this, _decorated);
-            //return constructionReturn;
-
-            RealProxy rp = RemotingServices.GetRealProxy(this._decorated);
-            var res = rp.InitializeServerObject(constructionCall);
-            MarshalByRefObject tp = this.GetTransparentProxy() as MarshalByRefObject;
-            return EnterpriseServicesHelper.CreateConstructionReturnMessage(constructionCall, tp);
+            RemotingServices.GetRealProxy(this._decorated).InitializeServerObject(constructionCall);
+            var tp = this.GetTransparentProxy() as MarshalByRefObject;
+            var res = EnterpriseServicesHelper.CreateConstructionReturnMessage(constructionCall, tp);
+            return res;
         }
 
         private IMethodReturnMessage InvokeMethod(IMethodCallMessage methodCall)
         {
-            //Func<IMethodReturnMessage> baseInvoke = () => RemotingServices.ExecuteMessage(Target, methodCall);
-
-            //var newInvoke = methodCall.MethodBase.GetCustomAttributes<AspectAttribute>(true)
-            //    .Reverse()
-            //    .Aggregate(baseInvoke, (f, a) => () => a.Invoke(f, Target, methodCall));
-
-            //return newInvoke();
-            MethodInfo methodInfo = methodCall.MethodBase as MethodInfo;
             try
             {
                 OnBeforeExecute(methodCall);
                 var res = RemotingServices.ExecuteMessage(this._decorated, methodCall);
-
-                //object result = methodInfo.Invoke(_decorated, methodCall.InArgs);
                 OnAfterExecute(methodCall);
-                //return new ReturnMessage(
-                //  result, null, 0, methodCall.LogicalCallContext, methodCall);
                 return res;
             }
             catch (Exception e)
@@ -138,30 +117,4 @@ namespace RealProxyTest
             }
         }
     }
-    //public override IMessage Invoke(IMessage msg)
-    //{
-    //    IMethodCallMessage methodCall = msg as IMethodCallMessage;
-    //    MethodInfo methodInfo = methodCall.MethodBase as MethodInfo;
-    //    if (methodInfo is null)
-    //    {
-    //        OnBeforeExecute(methodCall);
-    //        ConstructorInfo constructorInfo = methodCall.MethodBase as ConstructorInfo;
-    //        constructorInfo.Invoke(_decorated, methodCall.InArgs);
-    //        OnAfterExecute(methodCall);
-    //        //return new ReturnMessage(e, methodCall); //retrunの仕方がわからない
-    //        }
-    //    OnBeforeExecute(methodCall);
-    //    try
-    //    {
-    //        object result = methodInfo.Invoke(_decorated, methodCall.InArgs);
-    //        OnAfterExecute(methodCall);
-    //        return new ReturnMessage(
-    //          result, null, 0, methodCall.LogicalCallContext, methodCall);
-    //    }
-    //    catch (Exception e)
-    //    {
-    //        OnErrorExecuting(methodCall);
-    //        return new ReturnMessage(e, methodCall);
-    //    }
-    //}
 }
