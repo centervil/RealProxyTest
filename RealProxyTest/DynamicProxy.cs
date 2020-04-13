@@ -16,7 +16,7 @@ namespace RealProxyTest
 
         public event EventHandler<IMethodCallMessage> BeforeExecute;
 
-        public event EventHandler<IMethodCallMessage> AfterExecute;
+        public event EventHandler<IMethodReturnMessage> AfterExecute;
 
         public event EventHandler<IMethodCallMessage> ErrorExecuting;
 
@@ -55,14 +55,14 @@ namespace RealProxyTest
             }
         }
 
-        private void OnAfterExecute(IMethodCallMessage methodCall)
+        private void OnAfterExecute(IMethodReturnMessage methodReturn)
         {
             if (AfterExecute != null)
             {
-                MethodInfo methodInfo = methodCall.MethodBase as MethodInfo;
+                MethodInfo methodInfo = methodReturn.MethodBase as MethodInfo;
                 if (_filter(methodInfo))
                 {
-                    AfterExecute(this, methodCall);
+                    AfterExecute(this, methodReturn);
                 }
             }
         }
@@ -107,7 +107,7 @@ namespace RealProxyTest
             {
                 OnBeforeExecute(methodCall);
                 var res = RemotingServices.ExecuteMessage(this._decorated, methodCall);
-                OnAfterExecute(methodCall);
+                OnAfterExecute(res);
                 return res;
             }
             catch (Exception e)

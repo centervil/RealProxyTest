@@ -27,7 +27,7 @@ namespace RealProxyTest
                 Name = "Customer 1",
                 Address = "Address 1"
             };
-            customerRepository.Add(customer);
+            customerRepository.Add(customer, out var test);
             customerRepository.Update(customer);
             customerRepository.Delete(customer);
             Console.WriteLine("\r\nEnd program - logging with dynamic proxy\r\n***");

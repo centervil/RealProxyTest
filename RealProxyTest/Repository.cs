@@ -14,9 +14,10 @@ namespace RealProxyTest
             Console.WriteLine("Constructed");
         }
 
-        public void Add(Customer entity)
+        public void Add(Customer entity, out int test, string test2 = "test2")
         {
             Console.WriteLine("Adding {0}", entity);
+            test = 10;
         }
         public void Delete(Customer entity)
         {
