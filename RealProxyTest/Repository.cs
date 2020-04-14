@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -26,6 +27,10 @@ namespace RealProxyTest
         public void Update(Customer entity)
         {
             Console.WriteLine("Updating {0}", entity);
+        }
+        public void ThrowException()
+        {
+            throw new ArgumentException();
         }
         public IEnumerable<Customer> GetAll()
         {

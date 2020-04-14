@@ -20,16 +20,23 @@ namespace RealProxyTest
         {
             Console.WriteLine("***\r\n Begin program - logging with dynamic proxy\r\n");
             IRepository customerRepository = new Repository();
-              //RepositoryFactory.Create<Customer>();
             Customer customer = new Customer
             {
                 Id = 1,
-                Name = "Customer 1",
-                Address = "Address 1"
+                Name = "test Name",
+                Address = "test Address"
             };
-            customerRepository.Add(customer, out var test);
-            customerRepository.Update(customer);
-            customerRepository.Delete(customer);
+            try
+            {
+                customerRepository.Add(customer, out var test);
+                customerRepository.Update(customer);
+                customerRepository.Delete(customer);
+                customerRepository.ThrowException();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
             Console.WriteLine("\r\nEnd program - logging with dynamic proxy\r\n***");
             Console.ReadLine();
         }

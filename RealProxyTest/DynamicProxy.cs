@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Reflection;
 using System.Runtime.Remoting;
 using System.Runtime.Remoting.Activation;
@@ -11,14 +10,14 @@ namespace RealProxyTest
 {
     internal class DynamicProxy : RealProxy
     {
-        private MarshalByRefObject _decorated;
+        private readonly MarshalByRefObject _decorated;
         private Predicate<MethodInfo> _filter;
 
         public event EventHandler<IMethodCallMessage> BeforeExecute;
 
         public event EventHandler<IMethodReturnMessage> AfterExecute;
 
-        public event EventHandler<IMethodCallMessage> ErrorExecuting;
+        public event EventHandler<IMethodReturnMessage> ErrorExecuting;
 
         public DynamicProxy(MarshalByRefObject decorated, Type serverType)
           : base(serverType)
@@ -67,14 +66,14 @@ namespace RealProxyTest
             }
         }
 
-        private void OnErrorExecuting(IMethodCallMessage methodCall)
+        private void OnErrorExecuting(IMethodReturnMessage methodReturn)
         {
             if (ErrorExecuting != null)
             {
-                MethodInfo methodInfo = methodCall.MethodBase as MethodInfo;
+                MethodInfo methodInfo = methodReturn.MethodBase as MethodInfo;
                 if (_filter(methodInfo))
                 {
-                    ErrorExecuting(this, methodCall);
+                    ErrorExecuting(this, methodReturn);
                 }
             }
         }
@@ -95,25 +94,26 @@ namespace RealProxyTest
 
         private IConstructionReturnMessage InvokeConstructor(IConstructionCallMessage constructionCall)
         {
-            RemotingServices.GetRealProxy(this._decorated).InitializeServerObject(constructionCall);
-            var tp = this.GetTransparentProxy() as MarshalByRefObject;
-            var res = EnterpriseServicesHelper.CreateConstructionReturnMessage(constructionCall, tp);
+            RemotingServices.GetRealProxy(_decorated).InitializeServerObject(constructionCall);
+            MarshalByRefObject tp = GetTransparentProxy() as MarshalByRefObject;
+            IConstructionReturnMessage res = EnterpriseServicesHelper.CreateConstructionReturnMessage(constructionCall, tp);
             return res;
         }
 
         private IMethodReturnMessage InvokeMethod(IMethodCallMessage methodCall)
         {
-            try
+            OnBeforeExecute(methodCall);
+            IMethodReturnMessage res = RemotingServices.ExecuteMessage(_decorated, methodCall);
+
+            if (res.Exception == null)
             {
-                OnBeforeExecute(methodCall);
-                var res = RemotingServices.ExecuteMessage(this._decorated, methodCall);
                 OnAfterExecute(res);
                 return res;
             }
-            catch (Exception e)
+            else
             {
-                OnErrorExecuting(methodCall);
-                return new ReturnMessage(e, methodCall);
+                OnErrorExecuting(res);
+                return new ReturnMessage(res.Exception, methodCall);
             }
         }
     }

@@ -7,6 +7,7 @@ namespace RealProxyTest
         void Add(Customer entity, out int test, string test2 = "test2");
         void Delete(Customer entity);
         void Update(Customer entity);
+        void ThrowException();
         IEnumerable<Customer> GetAll();
         Customer GetById(int id);
     }
