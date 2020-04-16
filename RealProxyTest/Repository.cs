@@ -19,6 +19,7 @@ namespace RealProxyTest
         public void Update(T entity)
         {
             Console.WriteLine("Updating {0}", entity);
+            throw new NotImplementedException();
         }
         public IEnumerable<T> GetAll()
         {

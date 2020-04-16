@@ -5,9 +5,9 @@ using System.Runtime.Remoting.Proxies;
 
 namespace RealProxyTest
 {
-    internal class DynamicProxy<T> : RealProxy
+    internal class DynamicProxy : RealProxy
     {
-        private readonly T _decorated;
+        private readonly object _decorated;
         private Predicate<MethodInfo> _filter;
 
         public event EventHandler<IMethodCallMessage> BeforeExecute;
@@ -16,8 +16,8 @@ namespace RealProxyTest
 
         public event EventHandler<IMethodCallMessage> ErrorExecuting;
 
-        public DynamicProxy(T decorated)
-          : base(typeof(T))
+        public DynamicProxy(object decorated, Type typeToProxy)
+          : base(typeToProxy)
         {
             _decorated = decorated;
             Filter = m => true;

@@ -12,8 +12,8 @@ namespace RealProxyTest
         }
         public static IRepository<T> Create<T>()
         {
-            var repository = new Repository<T>();
-            var dynamicProxy = new DynamicProxy<IRepository<T>>(repository);
+            IRepository<T> repository = new Repository<T>();
+            var dynamicProxy = new DynamicProxy(repository, typeof(IRepository<T>));
             dynamicProxy.BeforeExecute += (s, e) => Log(
               "Before executing '{0}'", e.MethodName);
             dynamicProxy.AfterExecute += (s, e) => Log(
